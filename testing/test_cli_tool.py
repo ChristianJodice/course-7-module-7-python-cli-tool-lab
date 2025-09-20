@@ -7,14 +7,14 @@ def run_cli_command(command):
 
 def test_add_task():
     result = run_cli_command(["python", "-m", "lib.cli_tool", "add-task", "Alice", "Submit report"])
-    assert "📌 Task 'Submit report' added to Alice." in result.stdout
+    assert "Task 'Submit report' added to Alice." in result.stdout
 
 def test_complete_task_with_script(tmp_path):
     """Runs everything in one subprocess so state is shared."""
     script_path = tmp_path / "script.py"
     script_content = f"""
 import sys
-sys.path.insert(0, '{os.getcwd().replace("\\\\", "/")}')
+sys.path.insert(0, r'{os.getcwd()}')
 
 from lib.models import Task, User
 
@@ -28,4 +28,4 @@ task.complete()
     script_path.write_text(script_content)
 
     result = subprocess.run(["python", str(script_path)], capture_output=True, text=True)
-    assert "✅ Task 'Finish lab' completed." in result.stdout
+    assert "Task 'Finish lab' completed." in result.stdout
